@@ -96,7 +96,28 @@ class W_EmbeddedPyFunc(AbstractFunction):
         if w_this is not None:
             wpy_args_elems = [php_to_py(interp, w_this)] + wpy_args_elems
 
-        wpy_rv = interp.pyspace.call_function(self.py_callable, *wpy_args_elems)
+        n_args = len(wpy_args_elems)
+
+        # fast paths for 0-4 arguments
+        # (4 is upper threshold for fast paths in call_function())
+        if n_args == 0:
+            wpy_rv = interp.pyspace.call_function(self.py_callable)
+        elif n_args == 1:
+            wpy_rv = interp.pyspace.call_function(self.py_callable, wpy_args_elems[0])
+        elif n_args == 2:
+            wpy_rv = interp.pyspace.call_function(self.py_callable, wpy_args_elems[0],
+                    wpy_args_elems[1])
+        elif n_args == 3:
+            wpy_rv = interp.pyspace.call_function(self.py_callable, wpy_args_elems[0],
+                    wpy_args_elems[1], wpy_args_elems[2])
+        elif n_args == 4:
+            wpy_rv = interp.pyspace.call_function(self.py_callable, wpy_args_elems[0],
+                    wpy_args_elems[1], wpy_args_elems[2], wpy_args_elems[3])
+        else:
+            # slow path
+            wpy_rv = interp.pyspace.call_args(self.py_callable,
+                    Arguments(interp.pyspace, wpy_args_elems))
+
         return wpy_rv.wrap_for_php(interp)
 
     def needs_ref(self, i):
