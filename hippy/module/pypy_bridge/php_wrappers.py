@@ -47,6 +47,9 @@ class W_PyProxyGeneric(W_InstanceObject):
         ph_func = W_EmbeddedPyFunc(self.interp, self.wpy_inst)
         return ph_func
 
+    def wrap_for_py(self, interp):
+        return self.get_wrapped_py_obj()
+
 @wrap_method(['interp', ThisUnwrapper(W_PyProxyGeneric), str],
         name='GenericPyProxy::__get')
 def generic__get(interp, this, name):
@@ -213,6 +216,9 @@ class W_PyBridgeListProxy(W_ArrayObject):
     def create_iter(self, space, contextclass=None):
         return W_PyBridgeListProxyIterator(self.py_space, self.wpy_list)
 
+    def wrap_for_py(self, interp):
+        return self.get_wrapped_py_obj()
+
 class W_PyBridgeDictProxyIterator(W_BaseIterator):
 
     _immutable_fields_ = ["interp", "wpy_iter"]
@@ -242,6 +248,9 @@ class W_PyBridgeDictProxyIterator(W_BaseIterator):
         self.finished = self.remaining == 0
         wpy_k, wpy_v = self.wpy_iter.next_item()
         return wpy_k.wrap_for_php(interp), wpy_v.wrap_for_php(interp)
+
+    def wrap_for_py(self, interp):
+        return self.get_wrapped_py_obj()
 
 class W_PyBridgeDictProxy(W_ArrayObject):
     """ Wraps a Python dict as something PHP array. """
