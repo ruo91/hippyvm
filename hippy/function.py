@@ -166,6 +166,6 @@ class Function(AbstractFunction):
         assert w_res is not None
         return w_res
 
-    def wrap_for_py(self, interp):
+    def to_py(self, interp):
         from hippy.module.pypy_bridge import py_wrappers
         return py_wrappers.W_EmbeddedPHPFunc(interp.pyspace, self)

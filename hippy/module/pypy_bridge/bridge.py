@@ -45,7 +45,7 @@ def embed_py_mod(interp, mod_name, mod_source):
     code = pycompiler.compile(mod_source, 'XXX', 'exec', 0)
     code.exec_code(interp.pyspace, wpy_module.w_dict,wpy_module.w_dict)
 
-    return wpy_module.wrap_for_php(interp)
+    return wpy_module.to_php(interp)
 
 def _compile_py_func_from_string(interp, func_source):
     """ compiles a string returning a <name, func> pair """
@@ -104,4 +104,4 @@ def import_py_mod(interp, modname):
     w_obj = pyspace.call_function(w_import, w_modname, pyspace.w_None,
                                   pyspace.w_None, pyspace.wrap(modname.split(".")[-1]))
 
-    return w_obj.wrap_for_php(interp)
+    return w_obj.to_php(interp)

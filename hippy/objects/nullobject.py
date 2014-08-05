@@ -44,7 +44,7 @@ class W_NullObject(W_Object):
         builder.append("N;")
         return True
 
-    def wrap_for_py(self, interp):
+    def to_py(self, interp):
         return interp.pyspace.w_None
 
 w_Null = W_NullObject()

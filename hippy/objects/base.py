@@ -236,6 +236,6 @@ class W_Object(W_Root):
     def serialize(self, space, builder, memo):
         raise NotImplementedError # serialize need to be implemented by everyone
 
-    def wrap_for_py(self, interp):
+    def to_py(self, interp):
         from hippy.module.pypy_bridge import py_wrappers
         return py_wrappers.W_PHPProxyGeneric(interp, self)

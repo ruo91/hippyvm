@@ -57,7 +57,7 @@ class W_BoolObject(W_Object):
         builder.append(["b:0;", "b:1;"][self.boolval])
         return True
 
-    def wrap_for_py(self, interp):
+    def to_py(self, interp):
         return interp.pyspace.wrap(interp.space.is_true(self))
 
 w_True = W_BoolObject(True)
