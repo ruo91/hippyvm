@@ -96,9 +96,8 @@ class W_EmbeddedPyFunc(AbstractFunction):
         if w_this is not None:
             wpy_args_elems = [php_to_py(interp, w_this)] + wpy_args_elems
 
-        rv = interp.pyspace.call_args(
-                self.py_callable, Arguments(interp.pyspace, wpy_args_elems))
-        return rv.wrap_for_php(interp)
+        wpy_rv = interp.pyspace.call_function(self.py_callable, *wpy_args_elems)
+        return wpy_rv.wrap_for_php(interp)
 
     def needs_ref(self, i):
         return False
