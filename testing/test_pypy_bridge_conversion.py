@@ -1,4 +1,3 @@
-from hippy.module.pypy_bridge.conversion import php_to_py
 from testing.test_interpreter import MockInterpreter, BaseTestInterpreter
 
 import pytest
@@ -15,37 +14,37 @@ class TestPyPyBridgeConversions(BaseTestInterpreter):
     def test_py_int_of_ph_integer(self):
         interp = self.new_interp()
         wph_integer = interp.space.newint(666)
-        py_int = php_to_py(interp, wph_integer)
+        py_int = wph_integer.wrap_for_py(interp)
         assert interp.pyspace.int_w(py_int) == 666
 
     def test_py_none_of_ph_null(self):
         interp = self.new_interp()
-        wpy_none = php_to_py(interp, interp.space.w_Null)
+        wpy_none = interp.space.w_Null.wrap_for_py(interp)
         assert wpy_none is interp.pyspace.w_None
 
     def test_py_str_of_ph_string(self):
         interp = self.new_interp()
         wph_string = interp.space.wrap("smeg")
-        wpy_str = php_to_py(interp, wph_string)
+        wpy_str = wph_string.wrap_for_py(interp)
         assert interp.pyspace.str_w(wpy_str) == "smeg"
 
     def test_py_str_of_ph_string2(self):
         interp = self.new_interp()
         wph_string = interp.space.wrap("123") # can be interpreted as int
-        wpy_str = php_to_py(interp, wph_string)
+        wpy_str = wph_string.wrap_for_py(interp)
         assert interp.pyspace.str_w(wpy_str) == "123"
 
     def test_py_float_of_ph_float(self):
         interp = self.new_interp()
         wph_float = interp.space.wrap(1.337)
-        wpy_float = php_to_py(interp, wph_float)
+        wpy_float = wph_float.wrap_for_py(interp)
         assert interp.pyspace.float_w(wpy_float) == 1.337
 
     def test_py_bool_of_ph_boolean(self):
         interp = self.new_interp()
         for polarity in [True, False]:
             wph_boolean = interp.space.wrap(polarity)
-            wpy_bool = php_to_py(interp, wph_boolean)
+            wpy_bool = wph_boolean.wrap_for_py(interp)
             # XXX until interp.space.bool_w exists.
             assert interp.pyspace.bool_w(wpy_bool) == polarity
 
@@ -57,7 +56,7 @@ class TestPyPyBridgeConversions(BaseTestInterpreter):
         input = [1, 2, 3, "a", "b", "c" ]
         wph_elems = [ phspace.wrap(i) for i in input ]
         wph_arr = phspace.new_array_from_list(wph_elems)
-        wpy_converted = php_to_py(interp, wph_arr)
+        wpy_converted = wph_arr.wrap_for_py(interp)
 
         wpy_expect = pyspace.newlist([ pyspace.wrap(i) for i in input ])
         assert pyspace.is_true(pyspace.eq(wpy_converted, wpy_expect))
@@ -81,7 +80,7 @@ class TestPyPyBridgeConversions(BaseTestInterpreter):
         wph_arr_outer = phspace.new_array_from_list(wph_elems_outer)
         wph_arr_outer.appenditem_inplace(phspace, wph_arr_inner)
 
-        wpy_l = php_to_py(interp, wph_arr_outer)
+        wpy_l = wph_arr_outer.wrap_for_py(interp)
 
         consts = [ pyspace.wrap(i) for i in range(3) ]
 
